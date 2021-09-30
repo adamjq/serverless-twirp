@@ -1,4 +1,3 @@
-S3_BUCKET=artifacts-aws-sam
 STACK_NAME=lambdaapi
 
 build:
@@ -7,6 +6,9 @@ build:
 format:
 	gofmt -s -w .
 
+validate:
+	sam validate -t api.yaml
+
 run:
 	go run cmd/api/main.go
 
@@ -14,5 +16,18 @@ deploy:
 	sam deploy \
 		-t api.yaml \
 		--stack-name=$(STACK_NAME) \
-		--s3-bucket=$(S3_BUCKET) \
-		--capabilities=CAPABILITY_IAM
+		--capabilities=CAPABILITY_IAM \
+		--resolve-s3
+
+deploy-local:
+	samlocal validate -t api.yaml --region=us-east-1
+	samlocal deploy \
+		-t api.yaml \
+		--stack-name=$(STACK_NAME) \
+		--capabilities=CAPABILITY_IAM \
+		--region=us-east-1 \
+		--resolve-s3
+
+get-apigw-local-id:
+	$(eval API_ID=$(shell awslocal apigateway get-rest-apis | jq ".items[] | .id"))
+	@echo $(API_ID)
