@@ -31,3 +31,6 @@ cdk-bootstrap:
 
 cdk-deploy: build
 	cd _cdk && $(AWS_VAULT) npm run cdk synth && $(AWS_VAULT) npm run cdk deploy
+
+cdk-teardown:
+	cd _cdk && $(AWS_VAULT) npm run cdk destroy
