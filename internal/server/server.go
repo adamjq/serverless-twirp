@@ -55,17 +55,19 @@ func (s *Server) StoreUser(ctx context.Context, in *userpb.StoreUserRequest) (*u
 		Role:           in.GetRole().Enum().String(),
 	}
 
-	user, err := s.userStore.StoreUser(ctx, storeUser)
+	userId, err := s.userStore.StoreUser(ctx, storeUser)
 
 	if err != nil {
 		return nil, twirp.WrapError(twirp.NewError(twirp.Internal, "something went wrong"), err)
 	}
-
-	response := userpb.StoreUserResponse{
-		User: mapUserToTwirp(user),
+	if userId == nil {
+		return nil, twirp.NewError(twirp.Internal, "something went wrong")
 	}
 
-	return &response, nil
+	return &userpb.StoreUserResponse{
+		OrganisationId: in.GetOrganisationId(),
+		UserId:         *userId,
+	}, nil
 }
 
 func mapUserToTwirp(user *stores.User) *userpb.User {

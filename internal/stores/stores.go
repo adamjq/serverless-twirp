@@ -20,7 +20,7 @@ const (
 
 type Users interface {
 	GetUser(ctx context.Context, userId, orgId string) (*User, error)
-	StoreUser(ctx context.Context, user StoreUser) (*User, error)
+	StoreUser(ctx context.Context, user StoreUser) (*string, error)
 }
 
 type UserStore struct {
@@ -54,6 +54,7 @@ type StoreUser struct {
 	Role           string `validate:"required"`
 }
 
+// GetUser fetches and returns a user stored in DynamoDB
 func (us *UserStore) GetUser(ctx context.Context, orgId, userId string) (*User, error) {
 	pk := formatPK(orgId)
 	sk := formatSK(userId)
@@ -83,7 +84,8 @@ func (us *UserStore) GetUser(ctx context.Context, orgId, userId string) (*User, 
 	return user, nil
 }
 
-func (us *UserStore) StoreUser(ctx context.Context, user StoreUser) (*User, error) {
+// StoreUser stores a user in DynamoDB and returns their UserID
+func (us *UserStore) StoreUser(ctx context.Context, user StoreUser) (*string, error) {
 	newUserId := uuid.New().String()
 	pk := formatPK(user.OrganisationID)
 	sk := formatSK(newUserId)
@@ -104,9 +106,8 @@ func (us *UserStore) StoreUser(ctx context.Context, user StoreUser) (*User, erro
 	if err != nil {
 		return nil, errors.New("failed to marshall user")
 	}
-	log.Printf("Storing user in DynamoDB: %+v\n", item)
 
-	result, err := us.ddb.PutItem(ctx, &dynamodb.PutItemInput{
+	_, err = us.ddb.PutItem(ctx, &dynamodb.PutItemInput{
 		TableName: aws.String(us.tableName),
 		Item:      item,
 	})
@@ -115,15 +116,7 @@ func (us *UserStore) StoreUser(ctx context.Context, user StoreUser) (*User, erro
 		return nil, errors.New("error fetching item from DynamoDB")
 	}
 
-	log.Printf("Successfully stored user: %+v\n", result.Attributes)
-
-	resultUser := &User{}
-	err = attributevalue.UnmarshalMap(result.Attributes, resultUser)
-	if err != nil {
-		return nil, errors.New("failed to unmarshall user")
-	}
-
-	return resultUser, nil
+	return &newUserId, nil
 }
 
 func formatPK(orgId string) string {

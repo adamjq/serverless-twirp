@@ -24,7 +24,8 @@ message StoreUserRequest {
 }
 
 message StoreUserResponse {
-  User user = 1;
+  string organisation_id = 1;
+  string user_id = 2; 
 }
 
 message User {

@@ -8,6 +8,7 @@ import (
 	"github.com/adamjq/serverless-twirp/internal/stores"
 	"github.com/adamjq/serverless-twirp/internal/userpb"
 	"github.com/adamjq/serverless-twirp/mocks/storemock"
+	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
 )
@@ -63,7 +64,7 @@ func TestServer_GetUser(t *testing.T) {
 		{
 			name: "GetUser invaid input - no organisation ID",
 			input: &userpb.GetUserRequest{
-				UserId:         "1234",
+				UserId: "1234",
 			},
 			mockStoreResponseData:  nil,
 			mockStoreResponseError: nil,
@@ -116,38 +117,27 @@ func TestServer_StoreUser(t *testing.T) {
 	assert := require.New(t)
 
 	type test struct {
-		name                   string
-		input                  *userpb.StoreUserRequest
-		mockStoreResponseData  *stores.User
-		mockStoreResponseError error
-		want                   *userpb.StoreUserResponse
-		wantErr                bool
+		name                    string
+		input                   *userpb.StoreUserRequest
+		mockStoreResponseUserId *string
+		mockStoreResponseError  error
+		want                    *userpb.StoreUserResponse
+		wantErr                 bool
 	}
 	tests := []test{
 		{
 			name: "StoreUser request succeeds",
 			input: &userpb.StoreUserRequest{
 				OrganisationId: "5678",
-				FirstName: "Adam",
-				LastName: "Quigley",
-				Role: userpb.UserRole_USER_ROLE_ADMIN,
-			},
-			mockStoreResponseData: &stores.User{
-				UserID:         "1234",
-				OrganisationID: "5678",
 				FirstName:      "Adam",
 				LastName:       "Quigley",
-				Role:           "USER_ROLE_ADMIN",
+				Role:           userpb.UserRole_USER_ROLE_ADMIN,
 			},
-			mockStoreResponseError: nil,
+			mockStoreResponseUserId: aws.String("1234"),
+			mockStoreResponseError:  nil,
 			want: &userpb.StoreUserResponse{
-				User: &userpb.User{
-					UserId:         "1234",
-					OrganisationId: "5678",
-					FirstName:      "Adam",
-					LastName:       "Quigley",
-					Role:           userpb.UserRole_USER_ROLE_ADMIN,
-				},
+				UserId:         "1234",
+				OrganisationId: "5678",
 			},
 			wantErr: false,
 		},
@@ -155,14 +145,14 @@ func TestServer_StoreUser(t *testing.T) {
 			name: "StoreUser request fails",
 			input: &userpb.StoreUserRequest{
 				OrganisationId: "5678",
-				FirstName: "Adam",
-				LastName: "Quigley",
-				Role: userpb.UserRole_USER_ROLE_ADMIN,
+				FirstName:      "Adam",
+				LastName:       "Quigley",
+				Role:           userpb.UserRole_USER_ROLE_ADMIN,
 			},
-			mockStoreResponseData: nil,
-			mockStoreResponseError: errors.New("Internal error occurred"),
-			want: nil,
-			wantErr: true,
+			mockStoreResponseUserId: nil,
+			mockStoreResponseError:  errors.New("Internal error occurred"),
+			want:                    nil,
+			wantErr:                 true,
 		},
 	}
 
@@ -176,10 +166,10 @@ func TestServer_StoreUser(t *testing.T) {
 			s := NewServer(usersStoreMock)
 
 			// only mock store calls if expected
-			if tt.mockStoreResponseData != nil || tt.mockStoreResponseError != nil {
+			if tt.mockStoreResponseUserId != nil || tt.mockStoreResponseError != nil {
 				usersStoreMock.EXPECT().StoreUser(
 					gomock.Any(), gomock.Any(),
-				).Return(tt.mockStoreResponseData, tt.mockStoreResponseError)
+				).Return(tt.mockStoreResponseUserId, tt.mockStoreResponseError)
 			}
 
 			ctx := context.Background()
