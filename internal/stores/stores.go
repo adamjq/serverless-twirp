@@ -13,8 +13,12 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 )
 
+const (
+	NotFoundError string = "NotFoundError"
+)
+
 type Users interface {
-	GetUser(ctx context.Context) (*User, error)
+	GetUser(ctx context.Context, userId, orgId string) (*User, error)
 	StoreUser(ctx context.Context, userId string, user StoreUser) (*User, error)
 }
 
@@ -65,10 +69,9 @@ func (us *UserStore) GetUser(ctx context.Context, orgId, userId string) (*User, 
 		return nil, errors.New("error fetching item from DynamoDB")
 	}
 	if result.Item == nil {
-		return nil, errors.New("couldn't find item in DynamoDB")
+		log.Printf("ERROR: No user found in DynamoDB for OrgId: %s UserId: %s", orgId, userId)
+		return nil, errors.New(fmt.Sprintf("%s: couldn't find item in DynamoDB", NotFoundError))
 	}
-
-	log.Printf("STORE: Item fetched from store %v\n", result.Item)
 
 	user := &User{}
 	err = attributevalue.UnmarshalMap(result.Item, user)

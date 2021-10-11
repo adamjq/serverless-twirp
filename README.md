@@ -57,6 +57,13 @@ Localstack services can be inspected at http://localhost:4566/health.
 
 The app uses [aws-vault](https://github.com/99designs/aws-vault) to deploy to AWS environments.
 
+First, create a `.envrc` file following the pattern in `.envrc.example`.
+
+Install CDK dependencies:
+```
+cd _cdk && npm i
+```
+
 ```
 direnv allow .
 
@@ -86,7 +93,15 @@ The endpoints are unauthorized but could be secured with IAM Authentication or J
 
 ### DynamoDB
 
-DynamoDB is used for storage as it's quick, scalable and integrates well with AWS Lambda.
+DynamoDB is used for storage as it's quick, scalable and integrates well with AWS Lambda. The table follows [the single-table design pattern](https://www.alexdebrie.com/posts/dynamodb-single-table/) with generic partition and sort keys.
+
+For Users, the keys are:
+- `PK`: `ORG#{ORG_ID}`
+- `PK`: `USER#{USER_ID}`
+
+Which supports the access patterns:
+- Get all users in an organisation
+- Get a specific user
 
 The data model stored is:
 

@@ -8,7 +8,7 @@ generate:
 build: generate
 	cd cmd/api && GOARCH=amd64 GOOS=linux go build -o ../../dist/api
 
-test:
+test: generate
 	go test ./...
 
 lint:
@@ -17,7 +17,7 @@ lint:
 format:
 	gofmt -s -w .
 
-ci: lint generate test
+ci: lint test
 
 run:
 	go run cmd/api/main.go

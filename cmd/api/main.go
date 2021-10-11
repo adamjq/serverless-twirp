@@ -19,23 +19,6 @@ import (
 func main() {
 	cfg := loadedConfig.NewConfig()
 
-	// ddbOverride := "http://localstack:4566"
-
-	// // this is necessary to override localstack endpoints in development mode
-	// customResolver := aws.EndpointResolverFunc(func(service, region string) (aws.Endpoint, error) {
-	//   if service == dynamodb.ServiceID {
-	// 		log.Printf("Overriding DynamoDB endpoint to %s...", ddbOverride)
-	// 		return aws.Endpoint{
-	// 			PartitionID:   "aws",
-	// 			URL:           ddbOverride,
-	// 			SigningRegion: "us-east-1",
-	// 		}, nil
-	//   }
-	//   // returning EndpointNotFoundError will allow the service to fallback to it's default resolution
-	//   return aws.Endpoint{}, &aws.EndpointNotFoundError{}
-	// })
-	//awsCfg, err := awsConfig.LoadDefaultConfig(context.Background(), awsConfig.WithEndpointResolver(customResolver))
-
 	awsCfg, err := awsConfig.LoadDefaultConfig(context.Background())
 	if err != nil {
 		log.Fatalf("unable to load SDK config, %v", err)

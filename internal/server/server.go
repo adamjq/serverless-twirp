@@ -2,7 +2,9 @@ package server
 
 import (
 	"context"
+	"fmt"
 	"log"
+	"strings"
 
 	"github.com/adamjq/serverless-twirp/internal/stores"
 	"github.com/adamjq/serverless-twirp/internal/userpb"
@@ -12,10 +14,10 @@ import (
 
 // Server implements the Hello service
 type Server struct {
-	userStore *stores.UserStore
+	userStore stores.Users
 }
 
-func NewServer(userStore *stores.UserStore) *Server {
+func NewServer(userStore stores.Users) *Server {
 	return &Server{
 		userStore: userStore,
 	}
@@ -25,24 +27,25 @@ func (s *Server) GetUser(ctx context.Context, in *userpb.GetUserRequest) (*userp
 	orgId := in.GetOrganisationId()
 	userId := in.GetUserId()
 
-	log.Printf("SERVER: Fetching user OrgID: %v UserID %v from store", orgId, userId)
+	if orgId == "" {
+		return nil, twirp.NewError(twirp.InvalidArgument, "organisation_id is required")
+	}
+	if userId == "" {
+		return nil, twirp.NewError(twirp.InvalidArgument, "user_id is required")
+	}
 
 	user, err := s.userStore.GetUser(ctx, orgId, userId)
 
 	if err != nil {
-
-		// TODO: check not found case
+		if strings.Contains(err.Error(), stores.NotFoundError) {
+			return nil, twirp.NotFoundError(fmt.Sprintf("User %s not found for Organisation %s", userId, orgId))
+		}
 
 		return nil, twirp.WrapError(twirp.NewError(twirp.Internal, "something went wrong"), err)
 	}
 
-	log.Printf("SERVER: Retrieved user from store %+v", user)
-
-	twirpUser := mapUserToTwirp(user)
-	log.Printf("SERVER: Returning fetched user %+v", twirpUser)
-
 	return &userpb.GetUserResponse{
-		User: twirpUser,
+		User: mapUserToTwirp(user),
 	}, nil
 }
 

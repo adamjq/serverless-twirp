@@ -19,3 +19,6 @@ dist*
 cdk/node_modules
 
 .envrc
+
+mocks/*
+!mocks/gen.go
