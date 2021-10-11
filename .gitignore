@@ -15,3 +15,7 @@
 # vendor/
 
 dist*
+
+cdk/node_modules
+
+.envrc

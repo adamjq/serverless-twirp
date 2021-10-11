@@ -1,22 +1,29 @@
-# serverless-rpc
+# serverless-twirp
 Serverless Golang RPC API with MVC structure
+
+## Why Twirp?
+
+
+
+## Why Lambda?
 
 ## Dependencies:
 - AWS CLI
-- SAM CLI
-- [AWS SAM Local CLI](https://github.com/localstack/aws-sam-cli-local)
+- AWS CDK Local CLI](https://github.com/localstack/aws-cdk-local)
 - Docker
+- direnv
 - Go 1.17
+- [buf](https://docs.buf.build/installation/)
 
 ## Development
 
 ### Unit tests
 
 ```bash
-make test
+make ci
 ```
 
-### Manual testing
+### Localstack
 
 ```bash
 docker-compose up
@@ -24,19 +31,29 @@ docker-compose up
 
 In a separate terminal window run:
 ```
-make deploy-local
+make local-cdk-bootstrap
+make local-cdk-deploy
 
-awslocal s3 ls
+# test function is deploy
 awslocal lambda list-functions
-
-make get-apigw-local-id
-curl -X POST http://localhost:4566/restapis/{API_ID}/dev/hello -d 'Hello, world!'
 ```
 
 Localstack services can be inspected at http://localhost:4566/health.
 
 ## Deployment
 
-```bash
-make deploy
+The app uses [aws-vault](https://github.com/99designs/aws-vault) to deploy to AWS environments.
+
 ```
+direnv allow .
+
+# bootstrap AWS environment if not already done
+make cdk-bootstrap
+
+make cdk-deploy
+```
+
+## References
+
+- [Alex DeBrie DynamoDB blog](https://www.alexdebrie.com/posts/dynamodb-no-bad-queries/)
+- [DynamoDB AWS Go V2 cheatsheet](https://dynobase.dev/dynamodb-golang-query-examples/)

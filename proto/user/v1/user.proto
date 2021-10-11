@@ -1,0 +1,42 @@
+syntax = "proto3";
+package proto.user.v1;
+option go_package = "./;userpb";
+
+service UserService {
+  rpc GetUser(GetUserRequest) returns (GetUserResponse);
+  rpc StoreUser(StoreUserRequest) returns (StoreUserResponse);
+}
+
+message GetUserRequest {
+  string organisation_id = 1;
+  string user_id = 2;
+}
+
+message GetUserResponse {
+  User user = 1;
+}
+
+message StoreUserRequest {
+  string organisation_id = 1;
+  string first_name = 3;
+  string last_name = 4;
+  UserRole role = 5;
+}
+
+message StoreUserResponse {
+  User user = 1;
+}
+
+message User {
+  string organisation_id = 1;
+  string user_id = 2;
+  string first_name = 3;
+  string last_name = 4;
+  UserRole role = 5; 
+}
+
+enum UserRole {
+  USER_ROLE_UNSPECIFIED = 0;
+  USER_ROLE_READONLY = 1;
+  USER_ROLE_ADMIN = 2;
+}
