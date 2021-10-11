@@ -20,6 +20,10 @@ Twirp is a Go RPC framework developed by Twitch that uses Protobuf specification
 - API Gateway handles security out of the box with IAM Authentication and lambda authorizers
 - API Gateway can be configured to handle metering, throttling and monitoring
 
+## Architecture
+
+![AWS Architecture](docs/images/ServerlessTwirp.png)
+
 ## Dependencies:
 - AWS CLI
 - Docker
