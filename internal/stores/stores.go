@@ -11,6 +11,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
+	"github.com/google/uuid"
 )
 
 const (
@@ -19,7 +20,7 @@ const (
 
 type Users interface {
 	GetUser(ctx context.Context, userId, orgId string) (*User, error)
-	StoreUser(ctx context.Context, userId string, user StoreUser) (*User, error)
+	StoreUser(ctx context.Context, user StoreUser) (*User, error)
 }
 
 type UserStore struct {
@@ -82,15 +83,16 @@ func (us *UserStore) GetUser(ctx context.Context, orgId, userId string) (*User, 
 	return user, nil
 }
 
-func (us *UserStore) StoreUser(ctx context.Context, userId string, user StoreUser) (*User, error) {
+func (us *UserStore) StoreUser(ctx context.Context, user StoreUser) (*User, error) {
+	newUserId := uuid.New().String()
 	pk := formatPK(user.OrganisationID)
-	sk := formatSK(userId)
+	sk := formatSK(newUserId)
 	createdTime := time.Now().UTC()
 
 	userToStore := User{
 		PK:             pk,
 		SK:             sk,
-		UserID:         userId,
+		UserID:         newUserId,
 		OrganisationID: user.OrganisationID,
 		FirstName:      user.FirstName,
 		LastName:       user.LastName,

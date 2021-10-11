@@ -3,12 +3,10 @@ package server
 import (
 	"context"
 	"fmt"
-	"log"
 	"strings"
 
 	"github.com/adamjq/serverless-twirp/internal/stores"
 	"github.com/adamjq/serverless-twirp/internal/userpb"
-	"github.com/google/uuid"
 	"github.com/twitchtv/twirp"
 )
 
@@ -50,28 +48,21 @@ func (s *Server) GetUser(ctx context.Context, in *userpb.GetUserRequest) (*userp
 }
 
 func (s *Server) StoreUser(ctx context.Context, in *userpb.StoreUserRequest) (*userpb.StoreUserResponse, error) {
-
-	newUserId := uuid.New().String()
-
 	storeUser := stores.StoreUser{
 		OrganisationID: in.GetOrganisationId(),
 		FirstName:      in.GetFirstName(),
 		LastName:       in.GetLastName(),
 		Role:           in.GetRole().Enum().String(),
 	}
-	log.Printf("SERVER: Storing user %+v", storeUser)
 
-	user, err := s.userStore.StoreUser(ctx, newUserId, storeUser)
+	user, err := s.userStore.StoreUser(ctx, storeUser)
 
 	if err != nil {
 		return nil, twirp.WrapError(twirp.NewError(twirp.Internal, "something went wrong"), err)
 	}
 
-	twirpUser := mapUserToTwirp(user)
-	log.Printf("SERVER: Returning stored user %+v", twirpUser)
-
 	response := userpb.StoreUserResponse{
-		User: twirpUser,
+		User: mapUserToTwirp(user),
 	}
 
 	return &response, nil

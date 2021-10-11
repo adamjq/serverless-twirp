@@ -22,7 +22,7 @@ Twirp is a Go RPC framework developed by Twitch that uses Protobuf specification
 
 ## Dependencies:
 - AWS CLI
-- AWS CDK Local CLI](https://github.com/localstack/aws-cdk-local)
+- [AWS CDK Local CLI](https://github.com/localstack/aws-cdk-local)
 - Docker
 - direnv
 - Go 1.17
@@ -47,7 +47,7 @@ In a separate terminal window run:
 make local-cdk-bootstrap
 make local-cdk-deploy
 
-# test function is deploy
+# test lambda deployed
 awslocal lambda list-functions
 ```
 
@@ -55,7 +55,7 @@ Localstack services can be inspected at http://localhost:4566/health.
 
 ## Deployment
 
-The app uses [aws-vault](https://github.com/99designs/aws-vault) to deploy to AWS environments.
+The app uses [aws-vault](https://github.com/99designs/aws-vault) to deploy to AWS environments. This can be replaced with local AWS credentials if desired.
 
 First, create a `.envrc` file following the pattern in `.envrc.example`.
 
@@ -109,7 +109,7 @@ The data model stored is:
 
 ## Solution Drawbacks
 
-- Twirp uses POST requests meaning [API Gateway can't cache requests](https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-caching.html)
+- Twirp uses `POST` for requests meaning [API Gateway can't cache requests](https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-caching.html)
 - Golang lacks a strong ORM for DynamoDB
 
 ## References
