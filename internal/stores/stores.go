@@ -68,6 +68,7 @@ func (us *UserStore) GetUser(ctx context.Context, orgId, userId string) (*User, 
 	})
 
 	if err != nil {
+		log.Printf("ERROR: %+v", err)
 		return nil, errors.New("error fetching item from DynamoDB")
 	}
 	if result.Item == nil {
@@ -104,6 +105,7 @@ func (us *UserStore) StoreUser(ctx context.Context, user StoreUser) (*string, er
 
 	item, err := attributevalue.MarshalMap(userToStore)
 	if err != nil {
+		log.Printf("ERROR: %+v", err)
 		return nil, errors.New("failed to marshall user")
 	}
 
@@ -113,6 +115,7 @@ func (us *UserStore) StoreUser(ctx context.Context, user StoreUser) (*string, er
 	})
 
 	if err != nil {
+		log.Printf("ERROR: %+v", err)
 		return nil, errors.New("error fetching item from DynamoDB")
 	}
 

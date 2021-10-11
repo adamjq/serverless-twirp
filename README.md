@@ -22,7 +22,6 @@ Twirp is a Go RPC framework developed by Twitch that uses Protobuf specification
 
 ## Dependencies:
 - AWS CLI
-- [AWS CDK Local CLI](https://github.com/localstack/aws-cdk-local)
 - Docker
 - direnv
 - Go 1.17
@@ -30,28 +29,11 @@ Twirp is a Go RPC framework developed by Twitch that uses Protobuf specification
 
 ## Development
 
-### Unit tests
+### Tests
 
 ```bash
 make ci
 ```
-
-### Localstack
-
-```bash
-docker-compose up
-```
-
-In a separate terminal window run:
-```
-make local-cdk-bootstrap
-make local-cdk-deploy
-
-# test lambda deployed
-awslocal lambda list-functions
-```
-
-Localstack services can be inspected at http://localhost:4566/health.
 
 ## Deployment
 
@@ -81,12 +63,22 @@ The API exposes two endpoints:
 - `twirp/proto.user.v1.UserService/GetUser`
 - `twirp/proto.user.v1.UserService/StoreUser`
 
-For example:
+Call:
+
+```bash
+curl https://{API_ID.execute-api.us-east-1.amazonaws.com/prod/twirp/proto.user.v1.UserService/GetUser \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -d '{DATA_HERE}'
 ```
-  curl https://{API_ID.execute-api.us-east-1.amazonaws.com/prod/twirp/proto.user.v1.UserService/GetUser \
-    -X POST \
-    -H 'Content-Type: application/json' \
-    -d '{DATA_HERE}'
+
+For example:
+
+```bash
+curl https://o9muewet11.execute-api.us-east-1.amazonaws.com/prod/twirp/proto.user.v1.UserService/GetUser \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -d '@testdata/GetUserRequest.json'
 ```
 
 The endpoints are unauthorized but could be secured with IAM Authentication or JWT tokens.

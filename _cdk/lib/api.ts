@@ -4,7 +4,7 @@ import { LambdaRestApi } from '@aws-cdk/aws-apigateway';
 import { AttributeType, BillingMode, Table } from '@aws-cdk/aws-dynamodb';
 
 const LAMBDA_RUNTIME = Runtime.GO_1_X
-const LAMBDA_DEFAULT_TIMEOUT = Duration.seconds(10)
+const LAMBDA_DEFAULT_TIMEOUT = Duration.seconds(30)
 const LAMBDA_DEFAULT_MEMORY = 256 // megabytes
 const CODE_DIST = "../dist"
 
