@@ -2,7 +2,7 @@
 
 This repo contains a working example of a  Twirp API running on a serverless backend with AWS API Gateway, Lambda and DynamoDB.
 
-Twirp is a Go RPC framework developed by Twitch that uses Protobuf specifications.
+Twirp is a Go RPC framework developed by Twitch that uses Protobuf specs - [the Twitch announcement blog post contains more details](https://blog.twitch.tv/en/2018/01/16/twirp-a-sweet-new-rpc-framework-for-go-5f2febbf35f/).
 
 ## Why Twirp?
 
@@ -16,7 +16,7 @@ Twirp is a Go RPC framework developed by Twitch that uses Protobuf specification
 
 - Lambda only runs in response to requests, meaning it is cheap for sporadic workloads
 - Lambda handles autoscaling by default
-- Lambda is good fit with Golang because the compiled binaries are small and fast
+- Golang compiled binaries are relatively small, meaning faster cold-starts
 - API Gateway handles security out of the box with IAM Authentication and lambda authorizers
 - API Gateway can be configured to handle metering, throttling and monitoring
 
@@ -92,8 +92,8 @@ The endpoints are unauthorized but could be secured with IAM Authentication or J
 DynamoDB is used for storage as it's quick, scalable and integrates well with AWS Lambda. The table follows [the single-table design pattern](https://www.alexdebrie.com/posts/dynamodb-single-table/) with generic partition and sort keys.
 
 For Users, the keys are:
-- `PK`: `ORG#{ORG_ID}`
-- `PK`: `USER#{USER_ID}`
+- `Partition Key`: `ORG#{ORG_ID}`
+- `Sort Key`: `USER#{USER_ID}`
 
 Which supports the access patterns:
 - Get all users in an organisation
