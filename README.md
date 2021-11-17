@@ -36,7 +36,7 @@ Twirp is a Go RPC framework developed by Twitch that uses Protobuf specs - [the 
 ### Tests
 
 ```bash
-make ci
+make test
 ```
 
 ## Deployment
