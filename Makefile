@@ -17,8 +17,6 @@ lint:
 format:
 	gofmt -s -w .
 
-ci: lint test
-
 run:
 	go run cmd/api/main.go
 
