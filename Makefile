@@ -1,3 +1,5 @@
+CDK_DIR=_cdk
+
 generate:
 	protoc \
 		--go_out=./internal/userpb \
@@ -20,15 +22,29 @@ format:
 run:
 	go run cmd/api/main.go
 
+########## CDK CI ##########
+
+cdk-install:
+	cd $(CDK_DIR) && npm ci
+
+cdk-lint:
+	cd $(CDK_DIR) && npm run lint && npm run prettier
+
+cdk-test: build
+	cd $(CDK_DIR) && npm run test
+
+cdk-build:
+	cd $(CDK_DIR) && npm run build
+
 ########## AWS ##########
 
 AWS_VAULT := aws-vault exec $(AWS_PROFILE) --
 
 cdk-bootstrap:
-	cd _cdk && $(AWS_VAULT) npm run cdk bootstrap
+	cd $(CDK_DIR) && $(AWS_VAULT) npm run cdk bootstrap
 
 cdk-deploy: build
-	cd _cdk && $(AWS_VAULT) npm run cdk synth && $(AWS_VAULT) npm run cdk deploy
+	cd $(CDK_DIR) && $(AWS_VAULT) npm run cdk synth && $(AWS_VAULT) npm run cdk deploy
 
 cdk-teardown:
-	cd _cdk && $(AWS_VAULT) npm run cdk destroy
+	cd $(CDK_DIR) && $(AWS_VAULT) npm run cdk destroy
