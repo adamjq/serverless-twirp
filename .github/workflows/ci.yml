@@ -8,27 +8,6 @@ on:
 
 jobs:
 
-  # cdk-ci:
-  #   name: CDK CI
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - uses: actions/setup-node@v2
-  #       with:
-  #         node-version: '14'
-  #     - name: Install dependencies
-  #       run: make cdk-install
-  #     - name: Install protoc generators
-  #       run: |
-  #         go get github.com/golang/protobuf/protoc-gen-go
-  #         go get github.com/twitchtv/twirp/protoc-gen-twirp
-  #     - name: Lint
-  #       run: make cdk-lint
-  #     - name: Test
-  #       run: make cdk-test
-  #     - name: Build
-  #       run: make cdk-build
-
   build:
     name: Build
     runs-on: ubuntu-latest
