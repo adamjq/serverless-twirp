@@ -18,6 +18,10 @@ jobs:
           node-version: '14'
       - name: Install dependencies
         run: make cdk-install
+      - name: Install protoc generators
+        run: |
+          go get github.com/golang/protobuf/protoc-gen-go
+          go get github.com/twitchtv/twirp/protoc-gen-twirp
       - name: Lint
         run: make cdk-lint
       - name: Test
