@@ -30,7 +30,7 @@ cdk-install:
 cdk-lint:
 	cd $(CDK_DIR) && npm run lint && npm run prettier
 
-cdk-test: build
+cdk-test:
 	cd $(CDK_DIR) && npm run test
 
 cdk-build:
