@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-import 'source-map-support/register';
-import { App } from '@aws-cdk/core';
-import { ApiStack } from '../lib/api';
+import "source-map-support/register";
+import { App } from "aws-cdk-lib";
+import { ApiStack } from "../lib/api-stack";
 
 const app = new App();
-new ApiStack(app, 'ServerlessTwirpApiStack', {});
+new ApiStack(app, "ServerlessTwirpApiStack", {});
