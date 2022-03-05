@@ -5,7 +5,10 @@ import (
 )
 
 type Config struct {
-	BackendTable string `envconfig:"BACKEND_TABLE"`
+	BackendTable   string `envconfig:"BACKEND_TABLE"`
+	Addr           string `envconfig:"ADDR" default:"8080"`
+	DynamoEndpoint string `envconfig:"DYNAMO_ENDPOINT"`
+	AwsRegion      string `envconfig:"AWS_REGION"`
 }
 
 func (c *Config) validate() error {

@@ -24,3 +24,5 @@ cdk/node_modules
 
 mocks/*
 !mocks/gen.go
+
+my-dynamodb-data/

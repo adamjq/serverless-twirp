@@ -33,6 +33,17 @@ Twirp is a Go RPC framework developed by Twitch that uses Protobuf specs - [the 
 
 ## Development
 
+### Local Dev
+
+Run the service locally in Docker with:
+```
+docker-compose up
+```
+
+Local DynamoDB tables can be inspected using `Dynamo Admin` at http://0.0.0.0:8001/.
+
+A script is also executed on startup to create a DynamoDB table in the local container.
+
 ### Tests
 
 ```bash
@@ -66,24 +77,6 @@ make cdk-deploy
 The API exposes two endpoints:
 - `twirp/proto.user.v1.UserService/GetUser`
 - `twirp/proto.user.v1.UserService/StoreUser`
-
-Call:
-
-```bash
-curl https://{API_ID.execute-api.us-east-1.amazonaws.com/prod/twirp/proto.user.v1.UserService/GetUser \
-  -X POST \
-  -H 'Content-Type: application/json' \
-  -d '{DATA_HERE}'
-```
-
-For example:
-
-```bash
-curl https://o9muewet11.execute-api.us-east-1.amazonaws.com/prod/twirp/proto.user.v1.UserService/GetUser \
-  -X POST \
-  -H 'Content-Type: application/json' \
-  -d '@testdata/GetUserRequest.json'
-```
 
 The endpoints are unauthorized but could be secured with IAM Authentication or JWT tokens.
 

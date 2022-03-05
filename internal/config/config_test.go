@@ -16,4 +16,5 @@ func TestConfig_valid(t *testing.T) {
 	assert.NoError(err)
 
 	assert.Equal("dynamodbtable", cfg.BackendTable)
+	assert.Equal("8080", cfg.Addr)
 }
