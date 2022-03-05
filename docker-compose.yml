@@ -1,0 +1,56 @@
+version: "3.9"
+
+services:
+  dynamodb-local:
+    image:  amazon/dynamodb-local
+    container_name: dynamodb-local
+    restart: always
+    volumes:
+      - ./my-dynamodb-data:/home/dynamodblocal/data
+    ports:
+      - 8000:8000
+    command: "-jar DynamoDBLocal.jar -sharedDb -dbPath /home/dynamodblocal/data/"
+  dynamodb-admin:
+    image: aaronshaf/dynamodb-admin
+    environment:
+      DYNAMO_ENDPOINT: http://dynamodb-local:8000
+      AWS_REGION: us-east-1
+      AWS_ACCESS_KEY_ID: local
+      AWS_SECRET_ACCESS_KEY: local
+    depends_on:
+      - dynamodb
+    links:
+      - dynamodb
+    ports:
+      - 8001:8001
+  ddb-setup: # used to create dynamodb table
+    image: amazon/aws-cli:latest
+    environment:
+      AWS_REGION: us-east-1
+      AWS_ACCESS_KEY_ID: local
+      AWS_SECRET_ACCESS_KEY: local
+      DYNAMO_ENDPOINT: http://dynamodb-local:8000
+    volumes:
+      - ./scripts/ddb-create-table.sh:/scripts/ddb-create-table.sh
+    entrypoint: sh -c "/scripts/ddb-create-table.sh"
+    depends_on:
+      - dynamodb
+    links:
+      - dynamodb
+  app:
+    build: .
+    command: [ "make", "run" ]
+    environment:
+      BACKEND_TABLE: FakeTable # created after startup by dbb-setup
+      DYNAMO_ENDPOINT: http://dynamodb-local:8000
+      AWS_REGION: us-east-1
+      AWS_ACCESS_KEY_ID: local
+      AWS_SECRET_ACCESS_KEY: local
+    depends_on:
+      - dynamodb-local
+    links:
+      - dynamodb-local
+    ports:
+      - 8080:8080
+    volumes:
+      - .:/src
