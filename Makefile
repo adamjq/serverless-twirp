@@ -38,16 +38,13 @@ cdk-build:
 
 ########## AWS ##########
 
-#AWS_VAULT := aws-vault exec $(AWS_PROFILE) --
+AWS_VAULT := aws-vault exec $(AWS_PROFILE) --
 
 cdk-bootstrap:
 	cd $(CDK_DIR) && $(AWS_VAULT) npm run cdk bootstrap
 
-# cdk-deploy: build
-# 	cd $(CDK_DIR) && $(AWS_VAULT) npm run cdk synth && $(AWS_VAULT) npm run cdk deploy
-
 cdk-deploy: build
-	cd $(CDK_DIR) && npm run cdk synth && npm run cdk deploy
+	cd $(CDK_DIR) && $(AWS_VAULT) npm run cdk synth && $(AWS_VAULT) npm run cdk deploy
 
 cdk-teardown:
 	cd $(CDK_DIR) && $(AWS_VAULT) npm run cdk destroy
