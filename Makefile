@@ -2,8 +2,8 @@ CDK_DIR=_cdk
 
 generate:
 	protoc \
-		--go_out=./internal/userpb \
-	  --twirp_out=./internal/userpb \
+		--go_out=. \
+	  	--twirp_out=. \
 		./proto/user/v1/user.proto
 	@go generate ./...
 

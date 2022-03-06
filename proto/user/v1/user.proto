@@ -1,6 +1,6 @@
 syntax = "proto3";
 package proto.user.v1;
-option go_package = "./;userpb";
+option go_package = "pkg/userpb";
 
 service UserService {
   rpc GetUser(GetUserRequest) returns (GetUserResponse);

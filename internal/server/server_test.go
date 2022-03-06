@@ -6,8 +6,8 @@ import (
 	"testing"
 
 	"github.com/adamjq/serverless-twirp/internal/stores"
-	"github.com/adamjq/serverless-twirp/internal/userpb"
 	"github.com/adamjq/serverless-twirp/mocks/storemock"
+	"github.com/adamjq/serverless-twirp/pkg/userpb"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"

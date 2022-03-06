@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/adamjq/serverless-twirp/internal/stores"
-	"github.com/adamjq/serverless-twirp/internal/userpb"
+	"github.com/adamjq/serverless-twirp/pkg/userpb"
 	"github.com/twitchtv/twirp"
 )
 
